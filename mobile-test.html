@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>اختبار الهاتف - صوتي</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: 'Segoe UI', Arial, sans-serif; background: #0f0f1a; color: #e2e8f0; min-height: 100vh; padding: 20px; }
+  h1 { font-size: 22px; color: #a78bfa; margin-bottom: 6px; }
+  .subtitle { font-size: 13px; color: #64748b; margin-bottom: 24px; }
+  .card { background: #1e1e2e; border: 1px solid #2d2d3d; border-radius: 16px; padding: 20px; margin-bottom: 16px; }
+  .card h2 { font-size: 15px; color: #94a3b8; margin-bottom: 14px; display: flex; align-items: center; gap: 8px; }
+  .test-row { display: flex; align-items: center; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid #2d2d3d; }
+  .test-row:last-child { border-bottom: none; }
+  .test-label { font-size: 14px; }
+  .badge { padding: 4px 10px; border-radius: 20px; font-size: 12px; font-weight: 700; }
+  .pass { background: rgba(16,185,129,0.15); color: #10b981; }
+  .fail { background: rgba(239,68,68,0.15); color: #ef4444; }
+  .warn { background: rgba(245,158,11,0.15); color: #f59e0b; }
+  .btn { display: block; width: 100%; padding: 14px; background: linear-gradient(135deg,#7c3aed,#ec4899); border: none; border-radius: 12px; color: white; font-size: 15px; font-weight: 700; cursor: pointer; margin-bottom: 10px; text-decoration: none; text-align: center; }
+  .btn-outline { background: none; border: 2px solid #7c3aed; color: #a78bfa; }
+  .ip-box { background: #13131f; border: 2px dashed #7c3aed; border-radius: 12px; padding: 16px; text-align: center; margin-bottom: 16px; }
+  .ip-box .ip { font-size: 24px; font-weight: 900; color: #a78bfa; letter-spacing: 1px; }
+  .ip-box .note { font-size: 12px; color: #64748b; margin-top: 6px; }
+  .steps li { padding: 8px 0 8px 16px; font-size: 14px; border-bottom: 1px solid #2d2d3d; list-style: none; counter-increment: step; position: relative; }
+  .steps li::before { content: counter(step); position: absolute; right: -2px; width: 22px; height: 22px; background: #7c3aed; border-radius: 50%; font-size: 11px; font-weight: 800; display: flex; align-items: center; justify-content: center; }
+  .steps { counter-reset: step; padding-right: 30px; }
+  #results { margin-top: 20px; }
+  .result-item { padding: 8px 12px; border-radius: 8px; margin-bottom: 6px; font-size: 13px; }
+  .result-item.ok { background: rgba(16,185,129,0.1); border-right: 3px solid #10b981; }
+  .result-item.err { background: rgba(239,68,68,0.1); border-right: 3px solid #ef4444; }
+</style>
+</head>
+<body>
+<h1>📱 اختبار التطبيق على الهاتف</h1>
+<p class="subtitle">تقرير شامل لجميع مكونات الغرفة</p>
+
+<div class="ip-box">
+  <div style="font-size:13px;color:#94a3b8;margin-bottom:8px">عنوان السيرفر المحلي</div>
+  <div class="ip" id="localUrl">localhost:3000</div>
+  <div class="note">افتح هذا العنوان في المتصفح على جهازك</div>
+</div>
+
+<div class="card">
+  <h2>🔗 الوصول من الهاتف</h2>
+  <ol class="steps">
+    <li>تأكد أن الهاتف والكمبيوتر على نفس شبكة WiFi</li>
+    <li>افتح المتصفح على الهاتف (Chrome / Safari)</li>
+    <li>اكتب: <strong style="color:#a78bfa">192.168.100.2:3000</strong></li>
+    <li>إذا لم يفتح، جرّب: <strong style="color:#a78bfa">file://</strong> + مسار الملف المحلي</li>
+    <li>أو استخدم Chrome DevTools على الكمبيوتر (F12 → Toggle Device)</li>
+  </ol>
+</div>
+
+<div class="card">
+  <h2>🧪 اختبار الغرفة — اضغط لتشغيل</h2>
+  <button class="btn" onclick="runTests()">▶ تشغيل جميع الاختبارات</button>
+  <a class="btn btn-outline" href="index.html" target="_blank">🚀 فتح التطبيق</a>
+  <div id="results"></div>
+</div>
+
+<div class="card" id="deviceCard">
+  <h2>📊 معلومات الجهاز الحالي</h2>
+  <div id="deviceInfo"></div>
+</div>
+
+<div class="card">
+  <h2>✅ قائمة فحص الهاتف اليدوية</h2>
+  <div class="test-row"><span class="test-label">الغرفة تفتح بالضغط على بطاقة غرفة</span><span class="badge" id="c1">لم يُختبر</span></div>
+  <div class="test-row"><span class="test-label">الضغط على متحدث يفتح قائمة</span><span class="badge" id="c2">لم يُختبر</span></div>
+  <div class="test-row"><span class="test-label">زر ⋮ يفتح خيارات الغرفة</span><span class="badge" id="c3">لم يُختبر</span></div>
+  <div class="test-row"><span class="test-label">زر ✋ رفع اليد يعمل مع تأثير بصري</span><span class="badge" id="c4">لم يُختبر</span></div>
+  <div class="test-row"><span class="test-label">شريط الدردشة يمكن التمرير فيه</span><span class="badge" id="c5">لم يُختبر</span></div>
+  <div class="test-row"><span class="test-label">منتقي الإيموجي لا يتجاوز الشاشة</span><span class="badge" id="c6">لم يُختبر</span></div>
+  <div class="test-row"><span class="test-label">أزرار التحكم واضحة وقابلة للضغط</span><span class="badge" id="c7">لم يُختبر</span></div>
+  <div class="test-row"><span class="test-label">لا يوجد تداخل مع شريط التنقل</span><span class="badge" id="c8">لم يُختبر</span></div>
+  <div style="margin-top:14px;display:grid;grid-template-columns:1fr 1fr;gap:8px">
+    <button onclick="markAll('pass')" style="padding:10px;background:rgba(16,185,129,0.15);border:1px solid #10b981;border-radius:10px;color:#10b981;cursor:pointer;font-size:13px">✓ كل شيء يعمل</button>
+    <button onclick="markAll('fail')" style="padding:10px;background:rgba(239,68,68,0.15);border:1px solid #ef4444;border-radius:10px;color:#ef4444;cursor:pointer;font-size:13px">✗ وجدت مشاكل</button>
+  </div>
+</div>
+
+<script>
+function markAll(s) {
+  const cls = s==='pass'?'pass':'fail', txt = s==='pass'?'يعمل ✓':'يعمل ✗';
+  for(let i=1;i<=8;i++){
+    const el=document.getElementById('c'+i);
+    if(el){el.className='badge '+cls;el.textContent=txt;}
+  }
+}
+
+function showDevice() {
+  const ua = navigator.userAgent;
+  const isMobile = /Mobi|Android|iPhone|iPad/i.test(ua);
+  const isTouch  = navigator.maxTouchPoints > 0;
+  const w = window.innerWidth, h = window.innerHeight;
+  const dpr = window.devicePixelRatio || 1;
+  const isStandalone = window.matchMedia('(display-mode: standalone)').matches;
+  document.getElementById('deviceInfo').innerHTML = `
+    <div class="test-row"><span class="test-label">نوع الجهاز</span><span class="badge ${isMobile?'pass':'warn'}">${isMobile?'هاتف/تابلت':'سطح المكتب'}</span></div>
+    <div class="test-row"><span class="test-label">شاشة اللمس</span><span class="badge ${isTouch?'pass':'warn'}">${isTouch?'متوفرة':'غير متوفرة'}</span></div>
+    <div class="test-row"><span class="test-label">أبعاد الشاشة</span><span class="badge pass">${w}×${h}px</span></div>
+    <div class="test-row"><span class="test-label">كثافة البكسل</span><span class="badge ${dpr>=2?'pass':'warn'}">${dpr}x</span></div>
+    <div class="test-row"><span class="test-label">وضع PWA</span><span class="badge ${isStandalone?'pass':'warn'}">${isStandalone?'مثبت PWA':'متصفح عادي'}</span></div>
+    <div class="test-row"><span class="test-label">العرض صغير ≤768</span><span class="badge ${w<=768?'pass':'warn'}">${w<=768?'نعم (موبايل)':'لا (ديسكتوب)'}</span></div>
+  `;
+}
+
+async function runTests() {
+  const out = document.getElementById('results');
+  out.innerHTML = '<div style="color:#64748b;font-size:13px;padding:8px">جارٍ الاختبار...</div>';
+  const results = [];
+  const add = (ok, msg) => results.push({ok, msg});
+
+  // 1. Fetch app files
+  try {
+    const r = await fetch('index.html');
+    add(r.ok, 'index.html يُحمَّل بنجاح (' + r.status + ')');
+  } catch(e) { add(false, 'index.html — خطأ: ' + e.message); }
+
+  try {
+    const r = await fetch('js/app.js');
+    add(r.ok, 'app.js محمّل (' + r.status + ')');
+  } catch(e) { add(false, 'app.js — خطأ'); }
+
+  try {
+    const r = await fetch('js/extras.js');
+    add(r.ok, 'extras.js محمّل (' + r.status + ')');
+  } catch(e) { add(false, 'extras.js — خطأ'); }
+
+  try {
+    const r = await fetch('manifest.json');
+    if(r.ok){ const j=await r.json(); add(true,'manifest.json صالح — اسم: '+j.name); }
+    else add(false,'manifest.json — خطأ ' + r.status);
+  } catch(e) { add(false, 'manifest.json — خطأ'); }
+
+  try {
+    const r = await fetch('sw.js');
+    add(r.ok, 'Service Worker (sw.js) موجود (' + r.status + ')');
+  } catch(e) { add(false, 'sw.js — خطأ'); }
+
+  // 2. Device checks
+  const w = window.innerWidth;
+  add(w <= 768, `عرض الشاشة ${w}px — ${w<=768?'مناسب للموبايل':'سطح مكتب (استخدم DevTools)'}`);
+  add(navigator.maxTouchPoints > 0, `دعم اللمس: ${navigator.maxTouchPoints} نقطة`);
+  add('serviceWorker' in navigator, 'Service Worker مدعوم في المتصفح');
+  add(typeof window.matchMedia !== 'undefined', 'matchMedia مدعوم');
+
+  // 3. CSS media queries
+  const isMobileCSS = window.matchMedia('(max-width: 768px)').matches;
+  add(isMobileCSS, `CSS موبايل مُفعَّل: ${isMobileCSS?'نعم':'لا — وسّع نافذة DevTools'}`);
+
+  const isCoarse = window.matchMedia('(pointer: coarse)').matches;
+  add(isCoarse || true, `نوع المؤشر: ${isCoarse?'لمس (coarse)':'ماوس (fine)'} ${isCoarse?'✓':'— حسناً للديسكتوب'}`);
+
+  // 4. Render output
+  out.innerHTML = results.map(r =>
+    `<div class="result-item ${r.ok?'ok':'err'}">${r.ok?'✅':'❌'} ${r.msg}</div>`
+  ).join('');
+
+  const passed = results.filter(r=>r.ok).length;
+  out.innerHTML += `<div style="margin-top:12px;padding:12px;background:${passed===results.length?'rgba(16,185,129,0.1)':'rgba(245,158,11,0.1)'};border-radius:10px;font-size:14px;font-weight:700;color:${passed===results.length?'#10b981':'#f59e0b'}">
+    ${passed}/${results.length} اختبار نجح ${passed===results.length?'🎉':'— راجع الأخطاء أعلاه'}
+  </div>`;
+}
+
+showDevice();
+</script>
+</body>
+</html>
