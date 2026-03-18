@@ -350,6 +350,9 @@ body {
 }
 
 .btn-primary {
+  min-height: 48px;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: rgba(124,58,237,0.3);
   width: 100%;
   padding: 13px;
   background: var(--gradient-1);
@@ -413,6 +416,9 @@ body {
 }
 
 .btn-social {
+  min-height: 48px;
+  touch-action: manipulation;
+  -webkit-tap-highlight-color: rgba(124,58,237,0.2);
   flex: 1;
   padding: 12px;
   border: 1px solid var(--border);

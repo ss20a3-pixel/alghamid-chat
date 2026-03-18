@@ -1242,7 +1242,10 @@ function createRoom() {
 function handleLogin() {
   const phone = document.getElementById('loginPhone')?.value.trim();
   const pass  = document.getElementById('loginPass')?.value.trim();
-  if (!phone || !pass) { showToast('يرجى تعبئة جميع الحقول', 'error'); return; }
+  if (!phone && !pass) {
+    document.getElementById('loginPhone').value = 'مستر غامض';
+    document.getElementById('loginPass').value = '1234';
+  }
   localStorage.setItem('voicechat_logged', '1');
   localStorage.setItem('voicechat_uid', APP_DATA.currentUser.id);
   document.getElementById('authPage').classList.add('hidden');
@@ -1250,7 +1253,7 @@ function handleLogin() {
   renderSidebar();
   updateNotifBadge();
   navigate('home');
-  showToast(`مرحباً ${APP_DATA.currentUser.name}! (ID: ${APP_DATA.currentUser.id}) 👋`, 'success');
+  showToast('مرحباً ' + APP_DATA.currentUser.name + '! (ID: ' + APP_DATA.currentUser.id + ') 👋', 'success');
   if (APP_DATA.currentUser.isAppOwner) setTimeout(showOwnerEntryEffect, 500);
 }
 
@@ -1401,6 +1404,35 @@ document.addEventListener('DOMContentLoaded', () => {
   if (APP_DATA.currentUser.badges) earnedBadges = APP_DATA.currentUser.badges;
   if (APP_DATA.currentUser.xp) userXP = APP_DATA.currentUser.xp;
   try { const nid = parseInt(localStorage.getItem('voicechat_nextUid')); if (nid) APP_DATA.nextUserId = nid; } catch(e) {}
+
+  // ── Bind auth buttons (safe for all mobile browsers) ──
+  const loginBtn = document.getElementById('loginBtn');
+  if (loginBtn) loginBtn.addEventListener('click', function(e){ e.preventDefault(); handleLogin(); });
+
+  const quickLoginBtn = document.getElementById('quickLoginBtn');
+  if (quickLoginBtn) quickLoginBtn.addEventListener('click', function(e){
+    e.preventDefault();
+    document.getElementById('loginPhone').value = '+966 512 345 678';
+    document.getElementById('loginPass').value = '12345678';
+    handleLogin();
+  });
+
+  const googleBtn = document.getElementById('googleBtn');
+  if (googleBtn) googleBtn.addEventListener('click', function(e){ e.preventDefault(); handleGoogleLogin(); });
+
+  const fbBtn = document.getElementById('fbBtn');
+  if (fbBtn) fbBtn.addEventListener('click', function(e){ e.preventDefault(); handleGoogleLogin(); });
+
+  const regBtn = document.getElementById('regBtn');
+  if (regBtn) regBtn.addEventListener('click', function(e){ e.preventDefault(); handleRegister(); });
+
+  // ── Enter key on login fields ──
+  const loginPass = document.getElementById('loginPass');
+  if (loginPass) loginPass.addEventListener('keydown', function(e){ if(e.key==='Enter'){ e.preventDefault(); handleLogin(); } });
+  const loginPhone = document.getElementById('loginPhone');
+  if (loginPhone) loginPhone.addEventListener('keydown', function(e){ if(e.key==='Enter'){ e.preventDefault(); document.getElementById('loginPass').focus(); } });
+
+  // ── Auto login ──
   const savedUser = localStorage.getItem('voicechat_logged');
   if (savedUser) {
     document.getElementById('authPage').classList.add('hidden');
