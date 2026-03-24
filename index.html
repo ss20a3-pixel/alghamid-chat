@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+  <meta name="theme-color" content="#06000f">
+  <meta name="description" content="الغامض - تطبيق الدردشة الصوتية الحصري. غرف صوتية مباشرة، هدايا متحركة، مستويات وشارات، وتواصل بلا حدود">
+  <meta name="keywords" content="الغامض, دردشة صوتية, غرف صوتية, بث مباشر, هدايا, تواصل صوتي">
+  <meta name="author" content="الغامض">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="الغامض">
+  <meta name="msapplication-TileColor" content="#06000f">
+  <meta name="msapplication-tap-highlight" content="no">
+
+  <!-- Open Graph -->
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="الغامض - الدردشة الصوتية">
+  <meta property="og:description" content="انضم للغامض — تواصل صوتي حصري بلا حدود. غرف مباشرة، هدايا، ترتيب">
+  <meta property="og:image" content="icons/icon-512.png">
+
+  <title>الغامض — الدردشة الصوتية</title>
+
+  <!-- PWA Manifest -->
+  <link rel="manifest" href="manifest.json">
+
+  <!-- Icons -->
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+  <link rel="apple-touch-icon" sizes="180x180" href="icons/icon-192.png">
+
+  <!-- Preconnect to Google Fonts (performance) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <link rel="stylesheet" href="css/style.css?v=4.1">
+
+  <!-- Critical inline styles to avoid FOUC -->
+  <style>
+    html { background: #0A0A0F; }
+    #app { display: none; }
+    .hidden { display: none !important; }
+  </style>
+</head>
+<body>
+
+<!-- ========== AUTH PAGE ========== -->
+<div id="authPage" role="main" aria-label="صفحة تسجيل الدخول">
+  <div class="auth-container auth-page">
+    <div class="auth-bg-circles">
+      <div class="circle circle-1"></div>
+      <div class="circle circle-2"></div>
+      <div class="circle circle-3"></div>
+    </div>
+    <div class="auth-card">
+      <div class="auth-logo">
+        <div class="logo-icon" style="display:flex;align-items:center;justify-content:center;margin-bottom:8px">
+          <img src="icons/icon.svg" alt="الغامض" class="alghamid-logo-img" style="width:80px;height:80px">
+        </div>
+        <h1 class="alghamid-title">الـغـامـض</h1>
+        <p style="color:#9ca3af;font-size:12px;letter-spacing:2px;margin-top:4px">✦ دردشة صوتية حصرية ✦</p>
+      </div>
+
+      <div class="auth-tabs">
+        <button class="auth-tab active" id="loginTab" onclick="switchAuthTab('login')">تسجيل الدخول</button>
+        <button class="auth-tab" id="registerTab" onclick="switchAuthTab('register')">حساب جديد</button>
+      </div>
+
+      <!-- Login Form -->
+      <div class="auth-form" id="loginForm">
+        <div class="form-group">
+          <label>رقم الهاتف أو البريد</label>
+          <div class="input-icon-group">
+            <span class="icon">📱</span>
+            <input type="text" class="form-control" id="loginPhone" placeholder="+966 5xx xxx xxxx" autocomplete="tel">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>كلمة المرور</label>
+          <div class="input-icon-group">
+            <span class="icon">🔒</span>
+            <input type="password" class="form-control" id="loginPass" placeholder="كلمة المرور" autocomplete="current-password">
+          </div>
+        </div>
+        <div style="text-align:left;margin-bottom:16px">
+          <button class="btn-ghost" style="font-size:13px;padding:0" type="button">نسيت كلمة المرور؟</button>
+        </div>
+        <button class="btn-primary" type="button" id="loginBtn">تسجيل الدخول</button>
+        <div class="divider">أو سجّل دخولك بسرعة</div>
+        <button class="btn-primary" type="button" id="quickLoginBtn" style="background:linear-gradient(135deg,#F5C518,#D4A017);margin-bottom:10px;font-size:14px">🦅 دخول سريع — مستر غامض</button>
+        <div class="social-login">
+          <button class="btn-social" type="button" id="googleBtn">
+            <svg width="18" height="18" viewBox="0 0 48 48" style="vertical-align:middle"><path fill="#4285F4" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z"/><path fill="#34A853" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z"/><path fill="#FBBC05" d="M10.53 28.59A14.5 14.5 0 019.5 24c0-1.59.28-3.14.76-4.59L2.56 13.22A23.94 23.94 0 000 24c0 3.77.87 7.35 2.56 10.78l7.97-6.19z"/><path fill="#EA4335" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z"/></svg> Google
+          </button>
+          <button class="btn-social" type="button" id="fbBtn">
+            <span style="font-size:18px">f</span> Facebook
+          </button>
+        </div>
+      </div>
+
+      <!-- Register Form -->
+      <div class="auth-form hidden" id="registerForm">
+        <div class="form-group">
+          <label>الاسم الكامل</label>
+          <div class="input-icon-group">
+            <span class="icon">👤</span>
+            <input type="text" class="form-control" id="regName" placeholder="أدخل اسمك الكامل">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>رقم الهاتف</label>
+          <div class="input-icon-group">
+            <span class="icon">📱</span>
+            <input type="tel" class="form-control" id="regPhone" placeholder="+966 5xx xxx xxxx">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>كلمة المرور</label>
+          <div class="input-icon-group">
+            <span class="icon">🔒</span>
+            <input type="password" class="form-control" id="regPass" placeholder="8 أحرف على الأقل">
+          </div>
+        </div>
+        <div class="form-group">
+          <label>تاريخ الميلاد</label>
+          <input type="date" class="form-control" id="regBirth">
+        </div>
+        <div style="font-size:12px;color:var(--text-secondary);margin-bottom:16px;line-height:1.6">
+          بالتسجيل أنت توافق على
+          <span style="color:var(--primary-light);cursor:pointer">شروط الخدمة</span> و
+          <span style="color:var(--primary-light);cursor:pointer">سياسة الخصوصية</span>
+        </div>
+        <button class="btn-primary" type="button" id="regBtn">إنشاء حساب</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- ========== MAIN APP ========== -->
+<div id="app" class="hidden" role="application" aria-label="تطبيق الغامض للدردشة الصوتية">
+  <div class="app-layout">
+
+    <!-- Sidebar -->
+    <div class="sidebar" id="sidebar" role="navigation" aria-label="القائمة الجانبية">
+      <div class="sidebar-logo">
+        <img src="icons/icon.svg" alt="الغامض" style="width:36px;height:36px;border-radius:10px;box-shadow:0 0 14px rgba(124,58,237,0.5)">
+        <h2 style="background:linear-gradient(135deg,#a78bfa,#e879f9);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;letter-spacing:1px">الغامض</h2>
+      </div>
+
+      <div class="sidebar-user" id="sidebarUser" onclick="navigate('profile')"></div>
+
+      <nav class="sidebar-nav">
+        <div class="nav-section">
+          <div class="nav-section-title">الرئيسية</div>
+          <div class="nav-item active" data-page="home" onclick="navigate('home')">
+            <span class="nav-icon">🏠</span> الرئيسية
+          </div>
+          <div class="nav-item" data-page="explore" onclick="navigate('explore')">
+            <span class="nav-icon">🔍</span> استكشاف
+          </div>
+          <div class="nav-item" data-page="notifications" onclick="navigate('notifications')">
+            <span class="nav-icon">🔔</span> الإشعارات
+            <span class="badge">3</span>
+          </div>
+        </div>
+
+        <div class="nav-section">
+          <div class="nav-section-title">المجتمع</div>
+          <div class="nav-item" data-page="ranking" onclick="navigate('ranking')">
+            <span class="nav-icon">🏆</span> الترتيب
+          </div>
+          <div class="nav-item" data-page="feed" onclick="navigate('feed')">
+            <span class="nav-icon">📰</span> النشاط الاجتماعي
+          </div>
+          <div class="nav-item" data-page="challenges" onclick="navigate('challenges')">
+            <span class="nav-icon">🎯</span> التحديات
+          </div>
+          <div class="nav-item" data-page="friends" onclick="navigate('friends')">
+            <span class="nav-icon">👫</span> الأصدقاء
+          </div>
+          <div class="nav-item" data-page="levels" onclick="navigate('levels')">
+            <span class="nav-icon">⭐</span> المستويات والشارات
+          </div>
+          <div class="nav-item" onclick="showCreateRoom()">
+            <span class="nav-icon">➕</span> إنشاء غرفة
+          </div>
+          <div class="nav-item" data-page="live" onclick="navigate('live')">
+            <span class="nav-icon">🔴</span> البث المباشر
+          </div>
+        </div>
+
+        <div class="nav-section">
+          <div class="nav-section-title">حسابي</div>
+          <div class="nav-item" data-page="profile" onclick="navigate('profile')">
+            <span class="nav-icon">👤</span> ملفي الشخصي
+          </div>
+          <div class="nav-item" data-page="wallet" onclick="navigate('wallet')">
+            <span class="nav-icon">💰</span> المحفظة
+          </div>
+          <div class="nav-item" data-page="store" onclick="navigate('store')">
+            <span class="nav-icon">🛒</span> المتجر
+          </div>
+          <div class="nav-item" data-page="messages" onclick="navigate('messages')">
+            <span class="nav-icon">💬</span> الرسائل
+          </div>
+          <div class="nav-item" data-page="people" onclick="navigate('people')">
+            <span class="nav-icon">👥</span> الأشخاص
+          </div>
+          <div class="nav-item" data-page="vfx" onclick="navigate('vfx')">
+            <span class="nav-icon">🎭</span> فلاتر الصوت
+          </div>
+          <div class="nav-item" data-page="settings" onclick="navigate('settings')">
+            <span class="nav-icon">⚙️</span> الإعدادات
+          </div>
+        </div>
+
+        <!-- Admin Link — مرئي للمدير فقط -->
+        <div class="nav-section" id="sidebarAdminLink" style="display:none">
+          <div class="nav-section-title" style="color:#ef4444">المدير</div>
+          <a href="admin.html" target="_blank" class="nav-item" style="background:rgba(239,68,68,0.08);border:1px solid rgba(239,68,68,0.2);border-radius:12px;margin:0 4px;text-decoration:none;color:var(--text-primary)">
+            <span class="nav-icon">🔐</span>
+            <span>لوحة التحكم</span>
+            <span style="margin-right:auto;font-size:9px;background:rgba(239,68,68,0.2);color:#ef4444;padding:2px 6px;border-radius:8px;font-weight:800">ADMIN</span>
+          </a>
+        </div>
+
+      </nav>
+
+      <div class="sidebar-bottom">
+        <button onclick="navigate('wallet')" title="المحفظة">💰</button>
+        <button onclick="navigate('notifications')" title="الإشعارات">🔔</button>
+        <button onclick="navigate('settings')" title="الإعدادات">⚙️</button>
+        <button onclick="logout()" title="تسجيل الخروج">🚪</button>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content" id="mainContent" role="main" aria-label="المحتوى الرئيسي"></div>
+
+    <!-- FAB -->
+    <button class="fab" onclick="showCreateRoom()" title="إنشاء غرفة جديدة" aria-label="إنشاء غرفة جديدة">+</button>
+
+    <!-- Sidebar Overlay (mobile) -->
+    <div class="sidebar-overlay" id="sidebarOverlay" onclick="closeSidebar()"></div>
+
+    <!-- Mobile Bottom Nav -->
+    <nav class="mobile-nav" id="mobileNav" role="navigation" aria-label="التنقل السفلي">
+      <div class="mobile-nav-items">
+        <button class="mobile-nav-item active" data-page="home" onclick="navigate('home')">
+          <span class="nav-emoji">🏠</span>
+          <span class="nav-label">الرئيسية</span>
+        </button>
+        <button class="mobile-nav-item" data-page="feed" onclick="navigate('feed')">
+          <span class="nav-emoji">📰</span>
+          <span class="nav-label">النشاط</span>
+        </button>
+        <button class="mobile-nav-item" onclick="showCreateRoom()" style="position:relative">
+          <span style="width:46px;height:46px;background:linear-gradient(135deg,#7C3AED,#EC4899);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:22px;color:white;box-shadow:0 4px 15px rgba(124,58,237,0.5)">+</span>
+        </button>
+        <button class="mobile-nav-item" data-page="challenges" onclick="navigate('challenges')">
+          <span class="nav-emoji">🎯</span>
+          <span class="nav-label">التحديات</span>
+        </button>
+        <button class="mobile-nav-item" data-page="profile" onclick="navigate('profile')">
+          <span class="nav-emoji">👤</span>
+          <span class="nav-label">حسابي</span>
+        </button>
+      </div>
+    </nav>
+
+  </div>
+</div>
+
+<!-- ========== CREATE ROOM MODAL ========== -->
+<div class="modal-overlay hidden" id="createRoomModal" onclick="if(event.target===this)hideCreateRoom()">
+  <div class="modal">
+    <div class="modal-header">
+      <div class="modal-title">🎙️ إنشاء غرفة جديدة</div>
+      <button class="modal-close" onclick="hideCreateRoom()">✕</button>
+    </div>
+
+    <div class="form-group">
+      <label>اسم الغرفة *</label>
+      <input type="text" class="form-control" id="roomName" placeholder="أدخل اسم غرفتك...">
+    </div>
+
+    <div class="form-group">
+      <label>وصف الغرفة</label>
+      <textarea class="form-control" id="roomDesc" rows="3" placeholder="عن ماذا تريد التحدث؟" style="resize:vertical"></textarea>
+    </div>
+
+    <div class="form-group">
+      <label>نوع الغرفة</label>
+      <div class="room-type-grid">
+        <div class="room-type-item selected" onclick="selectRoomType(this)">
+          <div class="type-icon">🎵</div>
+          <div class="type-name">موسيقى</div>
+        </div>
+        <div class="room-type-item" onclick="selectRoomType(this)">
+          <div class="type-icon">💻</div>
+          <div class="type-name">تقنية</div>
+        </div>
+        <div class="room-type-item" onclick="selectRoomType(this)">
+          <div class="type-icon">😂</div>
+          <div class="type-name">كوميديا</div>
+        </div>
+        <div class="room-type-item" onclick="selectRoomType(this)">
+          <div class="type-icon">⚽</div>
+          <div class="type-name">رياضة</div>
+        </div>
+        <div class="room-type-item" onclick="selectRoomType(this)">
+          <div class="type-icon">🎮</div>
+          <div class="type-name">ألعاب</div>
+        </div>
+        <div class="room-type-item" onclick="selectRoomType(this)">
+          <div class="type-icon">📖</div>
+          <div class="type-name">قرآن</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="form-group">
+      <label>خصوصية الغرفة</label>
+      <div style="display:flex;gap:10px">
+        <label style="flex:1;padding:12px;background:var(--bg-dark);border:1px solid var(--primary);border-radius:12px;cursor:pointer;display:flex;align-items:center;gap:8px;font-size:13px">
+          <input type="radio" name="roomPrivacy" value="public" checked style="accent-color:var(--primary)"> 🌐 عامة
+        </label>
+        <label style="flex:1;padding:12px;background:var(--bg-dark);border:1px solid var(--border);border-radius:12px;cursor:pointer;display:flex;align-items:center;gap:8px;font-size:13px">
+          <input type="radio" name="roomPrivacy" value="private" style="accent-color:var(--primary)"> 🔒 خاصة
+        </label>
+      </div>
+    </div>
+
+    <div style="display:flex;gap:10px;margin-top:8px">
+      <button class="btn-secondary" style="flex:1" onclick="hideCreateRoom()">إلغاء</button>
+      <button class="btn-primary" style="flex:2" onclick="createRoom()">🚀 إنشاء الغرفة</button>
+    </div>
+  </div>
+</div>
+
+<!-- ========== TOAST CONTAINER ========== -->
+<div class="toast-container" id="toastContainer" role="alert" aria-live="polite"></div>
+
+<script src="js/data.js?v=4.1"></script>
+<script src="js/compat.js?v=4.1"></script>
+<script src="js/app.js?v=4.1"></script>
+<script src="js/audio.js?v=4.1"></script>
+<script src="js/perf.js?v=4.1"></script>
+<script src="js/features.js?v=4.1"></script>
+<script src="js/social.js?v=4.1"></script>
+<script src="js/extras.js?v=4.1"></script>
+<script>
+function selectRoomType(el) {
+  document.querySelectorAll('.room-type-item').forEach(function(i){ i.classList.remove('selected'); });
+  el.classList.add('selected');
+}
+window.onerror = function(msg, url, line) {
+  var d = document.createElement('div');
+  d.style.cssText = 'position:fixed;bottom:0;left:0;right:0;background:red;color:white;padding:8px;font-size:11px;z-index:99999;direction:ltr;font-family:monospace';
+  d.textContent = 'JS Error: ' + msg + ' at ' + url + ':' + line;
+  document.body.appendChild(d);
+  setTimeout(function(){ d.remove(); }, 10000);
+};
+</script>
+</body>
+</html>

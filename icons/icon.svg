@@ -1,0 +1,216 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <defs>
+    <!-- خلفية داكنة غامضة -->
+    <radialGradient id="bgGrad" cx="50%" cy="50%" r="50%">
+      <stop offset="0%"   stop-color="#1a0533"/>
+      <stop offset="100%" stop-color="#06000f"/>
+    </radialGradient>
+    <!-- تدرج الجناح الأيمن -->
+    <linearGradient id="wingR" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%"   stop-color="#3b0f7a"/>
+      <stop offset="60%"  stop-color="#1e0545"/>
+      <stop offset="100%" stop-color="#0a0015"/>
+    </linearGradient>
+    <!-- تدرج الجناح الأيسر -->
+    <linearGradient id="wingL" x1="100%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%"   stop-color="#3b0f7a"/>
+      <stop offset="60%"  stop-color="#1e0545"/>
+      <stop offset="100%" stop-color="#0a0015"/>
+    </linearGradient>
+    <!-- تدرج الجسم -->
+    <linearGradient id="bodyGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%"   stop-color="#2d0a5e"/>
+      <stop offset="100%" stop-color="#0f0020"/>
+    </linearGradient>
+    <!-- وهيج العين البنفسجي -->
+    <radialGradient id="eyeGlow" cx="50%" cy="50%" r="50%">
+      <stop offset="0%"   stop-color="#e040fb" stop-opacity="1"/>
+      <stop offset="40%"  stop-color="#9c27b0" stop-opacity="0.9"/>
+      <stop offset="100%" stop-color="#4a0080" stop-opacity="0"/>
+    </radialGradient>
+    <!-- توهج حول العينين -->
+    <radialGradient id="outerGlow" cx="50%" cy="40%" r="50%">
+      <stop offset="0%"   stop-color="#7c3aed" stop-opacity="0.35"/>
+      <stop offset="100%" stop-color="#7c3aed" stop-opacity="0"/>
+    </radialGradient>
+    <!-- مسار مقطوع للجناحين -->
+    <filter id="featherBlur" x="-5%" y="-5%" width="110%" height="110%">
+      <feGaussianBlur stdDeviation="1.5" result="blur"/>
+      <feComposite in="SourceGraphic" in2="blur" operator="over"/>
+    </filter>
+    <!-- توهج خارجي للنسر -->
+    <filter id="eagleGlow" x="-15%" y="-15%" width="130%" height="130%">
+      <feGaussianBlur stdDeviation="6" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+    <!-- توهج العين -->
+    <filter id="eyeFilter" x="-50%" y="-50%" width="200%" height="200%">
+      <feGaussianBlur stdDeviation="3" result="blur"/>
+      <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+
+  <!-- خلفية دائرية داكنة -->
+  <rect width="512" height="512" rx="120" fill="url(#bgGrad)"/>
+
+  <!-- هالة توهج خلفية -->
+  <ellipse cx="256" cy="230" rx="180" ry="160" fill="url(#outerGlow)"/>
+
+  <!-- ═══ الجناح الأيمن (المفرود) ═══ -->
+  <g filter="url(#eagleGlow)">
+    <!-- جسم الجناح -->
+    <path d="M256 240
+             C240 220, 200 200, 150 190
+             C110 182, 68 188, 42 198
+             C30 202, 22 210, 28 216
+             C50 210, 90 208, 130 212
+             C90 222, 52 238, 32 258
+             C28 264, 32 270, 40 268
+             C68 258, 108 244, 148 238
+             C110 252, 72 272, 52 295
+             C48 302, 54 308, 62 304
+             C90 290, 130 268, 170 258
+             C148 275, 120 298, 106 320
+             C103 328, 110 333, 118 328
+             C142 312, 172 288, 202 272
+             C192 290, 180 315, 175 338
+             C173 346, 182 350, 190 344
+             C202 326, 218 300, 234 278
+             L250 320 L256 295 Z"
+          fill="url(#wingR)" stroke="#5b21b6" stroke-width="0.5"/>
+    <!-- ريشات الجناح الأيمن -->
+    <path d="M256 240 C230 225 180 205 130 200" stroke="#6d28d9" stroke-width="1.5" fill="none" opacity="0.6"/>
+    <path d="M256 255 C220 245 165 235 118 235" stroke="#6d28d9" stroke-width="1.5" fill="none" opacity="0.5"/>
+    <path d="M256 268 C215 262 160 258 115 265" stroke="#5b21b6" stroke-width="1.5" fill="none" opacity="0.5"/>
+    <path d="M256 280 C220 278 170 278 130 290" stroke="#4c1d95" stroke-width="1" fill="none" opacity="0.4"/>
+    <!-- حواف ريشية -->
+    <path d="M42 198 L50 185 L62 202 L78 182 L92 205 L108 178 L120 208 L136 176 L148 206" stroke="#7c3aed" stroke-width="1.2" fill="none" stroke-linecap="round" opacity="0.7"/>
+    <path d="M32 258 L38 242 L52 262 L60 244 L74 266 L84 246 L98 268 L112 248 L126 270 L138 250 L152 272" stroke="#6d28d9" stroke-width="1" fill="none" stroke-linecap="round" opacity="0.6"/>
+    <path d="M52 295 L58 278 L72 300 L82 280 L96 302 L108 282 L122 305 L136 284 L152 306 L168 286 L182 310" stroke="#5b21b6" stroke-width="1" fill="none" stroke-linecap="round" opacity="0.5"/>
+  </g>
+
+  <!-- ═══ الجناح الأيسر (المفرود) ═══ -->
+  <g filter="url(#eagleGlow)">
+    <path d="M256 240
+             C272 220, 312 200, 362 190
+             C402 182, 444 188, 470 198
+             C482 202, 490 210, 484 216
+             C462 210, 422 208, 382 212
+             C422 222, 460 238, 480 258
+             C484 264, 480 270, 472 268
+             C444 258, 404 244, 364 238
+             C402 252, 440 272, 460 295
+             C464 302, 458 308, 450 304
+             C422 290, 382 268, 342 258
+             C364 275, 392 298, 406 320
+             C409 328, 402 333, 394 328
+             C370 312, 340 288, 310 272
+             C320 290, 332 315, 337 338
+             C339 346, 330 350, 322 344
+             C310 326, 294 300, 278 278
+             L262 320 L256 295 Z"
+          fill="url(#wingL)" stroke="#5b21b6" stroke-width="0.5"/>
+    <!-- ريشات الجناح الأيسر -->
+    <path d="M256 240 C282 225 332 205 382 200" stroke="#6d28d9" stroke-width="1.5" fill="none" opacity="0.6"/>
+    <path d="M256 255 C292 245 347 235 394 235" stroke="#6d28d9" stroke-width="1.5" fill="none" opacity="0.5"/>
+    <path d="M256 268 C297 262 352 258 397 265" stroke="#5b21b6" stroke-width="1.5" fill="none" opacity="0.5"/>
+    <path d="M256 280 C292 278 342 278 382 290" stroke="#4c1d95" stroke-width="1" fill="none" opacity="0.4"/>
+    <path d="M470 198 L462 185 L450 202 L434 182 L420 205 L404 178 L392 208 L376 176 L364 206" stroke="#7c3aed" stroke-width="1.2" fill="none" stroke-linecap="round" opacity="0.7"/>
+    <path d="M480 258 L474 242 L460 262 L452 244 L438 266 L428 246 L414 268 L400 248 L386 270 L374 250 L360 272" stroke="#6d28d9" stroke-width="1" fill="none" stroke-linecap="round" opacity="0.6"/>
+    <path d="M460 295 L454 278 L440 300 L430 280 L416 302 L404 282 L390 305 L376 284 L360 306 L344 286 L330 310" stroke="#5b21b6" stroke-width="1" fill="none" stroke-linecap="round" opacity="0.5"/>
+  </g>
+
+  <!-- ═══ جسم النسر ═══ -->
+  <g filter="url(#eagleGlow)">
+    <!-- الجسم الرئيسي -->
+    <ellipse cx="256" cy="290" rx="52" ry="70" fill="url(#bodyGrad)"/>
+    <!-- الصدر -->
+    <ellipse cx="256" cy="265" rx="44" ry="55" fill="#1e0545"/>
+    <!-- الرقبة -->
+    <path d="M232 210 Q220 190 228 172 Q238 155 256 150 Q274 155 284 172 Q292 190 280 210 Z"
+          fill="#2d0a5e"/>
+
+    <!-- ═══ الرأس ═══ -->
+    <ellipse cx="256" cy="175" rx="42" ry="38" fill="#1a0533"/>
+    <!-- تاج الرأس (ريشة الكبرياء) -->
+    <path d="M256 137 C252 118 244 108 248 96 C252 84 260 80 264 96 C268 108 260 118 256 137Z"
+          fill="#3b0f7a" opacity="0.9"/>
+    <path d="M256 135 C248 116 236 106 238 92 C240 80 250 78 252 94 C254 108 252 118 256 135Z"
+          fill="#6d28d9" opacity="0.6"/>
+
+    <!-- ═══ المنقار ═══ -->
+    <path d="M240 188 Q232 195 234 205 Q238 212 248 210 Q256 215 264 210 Q274 212 278 205 Q280 195 272 188 Q264 184 256 183 Q248 184 240 188Z"
+          fill="#f5c518"/>
+    <!-- طرف المنقار المعقوف -->
+    <path d="M248 208 Q256 218 264 208" stroke="#d4a017" stroke-width="2" fill="none" stroke-linecap="round"/>
+
+    <!-- ═══ عيون النسر المتوهجة ═══ -->
+    <!-- العين اليمنى - توهج خارجي -->
+    <circle cx="237" cy="170" r="14" fill="url(#eyeGlow)" opacity="0.5" filter="url(#eyeFilter)"/>
+    <!-- العين اليمنى - قرنية -->
+    <circle cx="237" cy="170" r="10" fill="#1a0533"/>
+    <!-- العين اليمنى - قزحية -->
+    <circle cx="237" cy="170" r="7" fill="#7c3aed"/>
+    <!-- العين اليمنى - بؤبؤ -->
+    <ellipse cx="237" cy="170" rx="3" ry="5" fill="#0a0015"/>
+    <!-- العين اليمنى - وميض -->
+    <circle cx="234" cy="167" r="2" fill="white" opacity="0.9"/>
+    <circle cx="240" cy="173" r="1" fill="#e040fb" opacity="0.7"/>
+
+    <!-- العين اليسرى - توهج خارجي -->
+    <circle cx="275" cy="170" r="14" fill="url(#eyeGlow)" opacity="0.5" filter="url(#eyeFilter)"/>
+    <!-- العين اليسرى - قرنية -->
+    <circle cx="275" cy="170" r="10" fill="#1a0533"/>
+    <!-- العين اليسرى - قزحية -->
+    <circle cx="275" cy="170" r="7" fill="#7c3aed"/>
+    <!-- العين اليسرى - بؤبؤ -->
+    <ellipse cx="275" cy="170" rx="3" ry="5" fill="#0a0015"/>
+    <!-- العين اليسرى - وميض -->
+    <circle cx="272" cy="167" r="2" fill="white" opacity="0.9"/>
+    <circle cx="278" cy="173" r="1" fill="#e040fb" opacity="0.7"/>
+
+    <!-- حاجب النسر (يُعطي تعبير قوي) -->
+    <path d="M226 160 Q237 155 248 160" stroke="#4c1d95" stroke-width="3" fill="none" stroke-linecap="round"/>
+    <path d="M264 160 Q275 155 286 160" stroke="#4c1d95" stroke-width="3" fill="none" stroke-linecap="round"/>
+  </g>
+
+  <!-- ═══ المخالب ═══ -->
+  <g opacity="0.8">
+    <!-- المخلب الأيمن -->
+    <path d="M230 348 L218 380 M230 348 L210 376 M230 348 L222 382 M230 348 L234 384"
+          stroke="#f5c518" stroke-width="3" stroke-linecap="round" fill="none"/>
+    <!-- المخلب الأيسر -->
+    <path d="M282 348 L294 380 M282 348 L302 376 M282 348 L290 382 M282 348 L278 384"
+          stroke="#f5c518" stroke-width="3" stroke-linecap="round" fill="none"/>
+    <!-- ساقا النسر -->
+    <path d="M240 320 L230 348" stroke="#f5c518" stroke-width="5" stroke-linecap="round" fill="none"/>
+    <path d="M272 320 L282 348" stroke="#f5c518" stroke-width="5" stroke-linecap="round" fill="none"/>
+  </g>
+
+  <!-- ═══ تأثيرات الغموض — جسيمات ضوئية صغيرة ═══ -->
+  <g opacity="0.5">
+    <circle cx="80"  cy="120" r="2" fill="#a855f7"/>
+    <circle cx="430" cy="100" r="1.5" fill="#c084fc"/>
+    <circle cx="60"  cy="380" r="2.5" fill="#7c3aed"/>
+    <circle cx="460" cy="360" r="2" fill="#9333ea"/>
+    <circle cx="120" cy="420" r="1.5" fill="#6d28d9"/>
+    <circle cx="400" cy="430" r="2" fill="#a855f7"/>
+    <circle cx="48"  cy="250" r="1.5" fill="#c084fc"/>
+    <circle cx="465" cy="270" r="1.5" fill="#7c3aed"/>
+    <circle cx="150" cy="80"  r="1" fill="#e879f9"/>
+    <circle cx="370" cy="75"  r="1.5" fill="#d946ef"/>
+    <!-- خطوط وهج صغيرة -->
+    <line x1="70"  y1="140" x2="90"  y2="135" stroke="#7c3aed" stroke-width="0.8" opacity="0.4"/>
+    <line x1="440" y1="130" x2="420" y2="125" stroke="#9333ea" stroke-width="0.8" opacity="0.4"/>
+    <line x1="50"  y1="300" x2="70"  y2="295" stroke="#6d28d9" stroke-width="0.8" opacity="0.3"/>
+    <line x1="462" y1="310" x2="442" y2="305" stroke="#7c3aed" stroke-width="0.8" opacity="0.3"/>
+  </g>
+
+  <!-- ═══ هالة قوس قزح غامضة في الأسفل ═══ -->
+  <path d="M100 430 Q256 390 412 430" stroke="url(#wingR)" stroke-width="2" fill="none" opacity="0.4" stroke-linecap="round"/>
+  <path d="M130 445 Q256 408 382 445" stroke="#7c3aed" stroke-width="1" fill="none" opacity="0.25" stroke-linecap="round"/>
+
+  <!-- ═══ إطار توهج بنفسجي خفيف حول اللوقو ═══ -->
+  <rect width="512" height="512" rx="120" fill="none" stroke="#7c3aed" stroke-width="3" opacity="0.4"/>
+  <rect width="512" height="512" rx="120" fill="none" stroke="#9333ea" stroke-width="1" opacity="0.2"/>
+</svg>

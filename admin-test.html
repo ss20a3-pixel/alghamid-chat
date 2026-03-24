@@ -1,0 +1,348 @@
+<!DOCTYPE html>
+<html lang="ar" dir="rtl">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>اختبار لوحة التحكم — الغامض</title>
+<style>
+  *{box-sizing:border-box;margin:0;padding:0}
+  body{font-family:'Segoe UI',sans-serif;background:#0a0010;color:#e2d9f3;padding:20px;direction:rtl}
+  h1{font-size:22px;font-weight:900;background:linear-gradient(135deg,#7c3aed,#ec4899);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;margin-bottom:20px}
+  .section{background:#12001f;border:1px solid #2d1060;border-radius:14px;padding:18px;margin-bottom:16px}
+  .section h2{font-size:14px;font-weight:800;color:#a78bfa;margin-bottom:12px;display:flex;align-items:center;gap:8px}
+  .test-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(260px,1fr));gap:10px}
+  .test-item{background:#1a0033;border:1px solid #3d1080;border-radius:10px;padding:12px;display:flex;align-items:center;gap:10px;transition:.2s}
+  .test-item.pass{border-color:#10b981;background:#001a10}
+  .test-item.fail{border-color:#ef4444;background:#1a0000}
+  .test-item.warn{border-color:#f59e0b;background:#1a1000}
+  .test-icon{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+  .pass .test-icon{background:rgba(16,185,129,.2)}
+  .fail .test-icon{background:rgba(239,68,68,.2)}
+  .warn .test-icon{background:rgba(245,158,11,.2)}
+  .test-name{font-size:12px;font-weight:700;flex:1}
+  .test-status{font-size:10px;font-weight:800;padding:2px 8px;border-radius:8px}
+  .pass .test-status{background:rgba(16,185,129,.2);color:#10b981}
+  .fail .test-status{background:rgba(239,68,68,.2);color:#ef4444}
+  .warn .test-status{background:rgba(245,158,11,.2);color:#f59e0b}
+  .summary{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:16px}
+  .sum-card{background:#12001f;border-radius:12px;padding:16px;text-align:center}
+  .sum-num{font-size:28px;font-weight:900}
+  .sum-label{font-size:11px;color:#a0a0c0;margin-top:4px}
+  #runBtn{background:linear-gradient(135deg,#7c3aed,#ec4899);border:none;color:#fff;padding:12px 28px;border-radius:12px;font-size:14px;font-weight:800;cursor:pointer;font-family:'Segoe UI',sans-serif;margin-bottom:16px}
+  #runBtn:hover{opacity:.9}
+  #openAdminBtn{background:rgba(124,58,237,.2);border:1px solid #7c3aed;color:#a78bfa;padding:10px 20px;border-radius:12px;font-size:13px;font-weight:700;cursor:pointer;font-family:'Segoe UI',sans-serif;margin-bottom:16px;margin-right:8px}
+  .iframe-wrap{display:none}
+  iframe{width:100%;height:600px;border:1px solid #2d1060;border-radius:12px;margin-top:12px}
+  .log-area{background:#0d0018;border:1px solid #2d1060;border-radius:10px;padding:14px;max-height:200px;overflow-y:auto;font-family:monospace;font-size:11px;color:#a0a0c0;margin-top:10px}
+  .log-area .ok{color:#10b981}
+  .log-area .err{color:#ef4444}
+  .log-area .warn{color:#f59e0b}
+  .log-area .info{color:#63b3ed}
+  .progress{height:6px;background:#1a0033;border-radius:6px;margin-bottom:16px;overflow:hidden}
+  .progress-fill{height:100%;background:linear-gradient(90deg,#7c3aed,#ec4899);transition:width .4s ease;border-radius:6px}
+</style>
+</head>
+<body>
+<h1>🦅 اختبار لوحة التحكم — الغامض</h1>
+
+<div class="summary">
+  <div class="sum-card"><div class="sum-num" id="totalCount" style="color:#a78bfa">0</div><div class="sum-label">إجمالي الاختبارات</div></div>
+  <div class="sum-card"><div class="sum-num" id="passCount" style="color:#10b981">0</div><div class="sum-label">ناجح ✓</div></div>
+  <div class="sum-card"><div class="sum-num" id="failCount" style="color:#ef4444">0</div><div class="sum-label">فاشل ✗</div></div>
+  <div class="sum-card"><div class="sum-num" id="warnCount" style="color:#f59e0b">0</div><div class="sum-label">تحذير ⚠</div></div>
+</div>
+
+<div class="progress"><div class="progress-fill" id="progressBar" style="width:0%"></div></div>
+
+<button id="runBtn" onclick="runAllTests()">▶️ تشغيل جميع الاختبارات</button>
+<button id="openAdminBtn" onclick="window.open('admin.html','_blank')">🔗 فتح لوحة التحكم</button>
+
+<div class="log-area" id="logArea"><span class="info">جاهز — اضغط "تشغيل جميع الاختبارات"</span></div>
+
+<div id="testSections"></div>
+
+<div class="iframe-wrap" id="iframeWrap">
+  <iframe id="adminFrame" src="admin.html"></iframe>
+</div>
+
+<script>
+const TESTS = [
+  // ═══ HTML Structure ═══
+  { group:'🏗️ بنية HTML', tests:[
+    { name:'صفحة VIP موجودة',      check: d => !!d.getElementById('page-vipusers') },
+    { name:'صفحة Levels موجودة',   check: d => !!d.getElementById('page-levels') },
+    { name:'صفحة Featured موجودة', check: d => !!d.getElementById('page-featuredrooms') },
+    { name:'sidebar VIP link',     check: d => !!d.querySelector('[onclick*="vipusers"]') },
+    { name:'sidebar levels link',  check: d => !!d.querySelector('[onclick*="levels"]') },
+    { name:'sidebar featured link',check: d => !!d.querySelector('[onclick*="featuredrooms"]') },
+    { name:'VIP tier grid',        check: d => !!d.getElementById('vipTierGrid') },
+    { name:'VIP users grid',       check: d => !!d.getElementById('vipUsersGrid') },
+    { name:'Levels overview',      check: d => !!d.getElementById('levelsOverview') },
+    { name:'Top users grid',       check: d => !!d.getElementById('topUsersGrid') },
+    { name:'Levels table body',    check: d => !!d.getElementById('levelsTableBody') },
+    { name:'XP events table',      check: d => !!d.getElementById('xpEventsTable') },
+    { name:'Featured rooms grid',  check: d => !!d.getElementById('featuredRoomsGrid') },
+    { name:'Featured slots',       check: d => !!d.getElementById('featuredSlots') },
+    { name:'Featured schedule',    check: d => !!d.getElementById('featuredSchedule') },
+    { name:'Featured analytics',   check: d => !!d.getElementById('featuredAnalytics') },
+  ]},
+
+  // ═══ Modals Existence ═══
+  { group:'🪟 وجود الـ Modals (10)', tests:[
+    { name:'modal: addVipModal',       check: d => !!d.getElementById('addVipModal') },
+    { name:'modal: vipPackagesModal',  check: d => !!d.getElementById('vipPackagesModal') },
+    { name:'modal: addXpModal',        check: d => !!d.getElementById('addXpModal') },
+    { name:'modal: editLevelModal',    check: d => !!d.getElementById('editLevelModal') },
+    { name:'modal: addLevelModal',     check: d => !!d.getElementById('addLevelModal') },
+    { name:'modal: addXpEventModal',   check: d => !!d.getElementById('addXpEventModal') },
+    { name:'modal: featureRoomModal',  check: d => !!d.getElementById('featureRoomModal') },
+    { name:'modal: scheduleModal',     check: d => !!d.getElementById('scheduleModal') },
+    { name:'modal: addUserModal (أصلي)', check: d => {
+      // قد يكون غير موجود كـ DOM id لكن showAddUserModal يعمل بـ toast
+      return typeof d.defaultView.showAddUserModal === 'function';
+    }},
+    { name:'modal: addGiftModal (أصلي)', check: d => {
+      return typeof d.defaultView.showAddGiftModal === 'function';
+    }},
+  ]},
+
+  // ═══ JS Functions ═══
+  { group:'⚙️ دوال JavaScript', tests:[
+    { name:'doLogin()',            check: d => typeof d.defaultView.doLogin === 'function' },
+    { name:'doLogout()',           check: d => typeof d.defaultView.doLogout === 'function' },
+    { name:'showPage()',           check: d => typeof d.defaultView.showPage === 'function' },
+    { name:'openModal()',          check: d => typeof d.defaultView.openModal === 'function' },
+    { name:'closeModal()',         check: d => typeof d.defaultView.closeModal === 'function' },
+    { name:'initPanel()',          check: d => typeof d.defaultView.initPanel === 'function' },
+    { name:'renderVipPage()',      check: d => typeof d.defaultView.renderVipPage === 'function' },
+    { name:'renderVipTiers()',     check: d => typeof d.defaultView.renderVipTiers === 'function' },
+    { name:'renderVipUsers()',     check: d => typeof d.defaultView.renderVipUsers === 'function' },
+    { name:'filterVipUsers()',     check: d => typeof d.defaultView.filterVipUsers === 'function' },
+    { name:'filterVipTier()',      check: d => typeof d.defaultView.filterVipTier === 'function' },
+    { name:'confirmAddVip()',      check: d => typeof d.defaultView.confirmAddVip === 'function' },
+    { name:'savePackages()',       check: d => typeof d.defaultView.savePackages === 'function' },
+    { name:'upgradeVip()',         check: d => typeof d.defaultView.upgradeVip === 'function' },
+    { name:'renewVip()',           check: d => typeof d.defaultView.renewVip === 'function' },
+    { name:'revokeVip()',          check: d => typeof d.defaultView.revokeVip === 'function' },
+    { name:'editPerks()',          check: d => typeof d.defaultView.editPerks === 'function' },
+    { name:'renderLevelsPage()',   check: d => typeof d.defaultView.renderLevelsPage === 'function' },
+    { name:'renderTopUsers()',     check: d => typeof d.defaultView.renderTopUsers === 'function' },
+    { name:'renderLevelsTable()',  check: d => typeof d.defaultView.renderLevelsTable === 'function' },
+    { name:'renderXpEvents()',     check: d => typeof d.defaultView.renderXpEvents === 'function' },
+    { name:'toggleXpEvent()',      check: d => typeof d.defaultView.toggleXpEvent === 'function' },
+    { name:'confirmAddXp()',       check: d => typeof d.defaultView.confirmAddXp === 'function' },
+    { name:'quickGrantXp()',       check: d => typeof d.defaultView.quickGrantXp === 'function' },
+    { name:'saveLevel()',          check: d => typeof d.defaultView.saveLevel === 'function' },
+    { name:'addNewLevel()',        check: d => typeof d.defaultView.addNewLevel === 'function' },
+    { name:'previewLevel()',       check: d => typeof d.defaultView.previewLevel === 'function' },
+    { name:'addXpEvent()',         check: d => typeof d.defaultView.addXpEvent === 'function' },
+    { name:'renderFeaturedPage()', check: d => typeof d.defaultView.renderFeaturedPage === 'function' },
+    { name:'unfeatureRoom()',      check: d => typeof d.defaultView.unfeatureRoom === 'function' },
+    { name:'featureDirect()',      check: d => typeof d.defaultView.featureDirect === 'function' },
+    { name:'clearAllFeatured()',   check: d => typeof d.defaultView.clearAllFeatured === 'function' },
+    { name:'confirmFeatureRoom()', check: d => typeof d.defaultView.confirmFeatureRoom === 'function' },
+    { name:'toggleSchedule()',     check: d => typeof d.defaultView.toggleSchedule === 'function' },
+    { name:'addSchedule()',        check: d => typeof d.defaultView.addSchedule === 'function' },
+    { name:'toast()',              check: d => typeof d.defaultView.toast === 'function' },
+    { name:'refreshData()',        check: d => typeof d.defaultView.refreshData === 'function' },
+    { name:'saveSettings()',       check: d => typeof d.defaultView.saveSettings === 'function' },
+    { name:'exportData()',         check: d => typeof d.defaultView.exportData === 'function' },
+    { name:'changeAdminPass()',    check: d => typeof d.defaultView.changeAdminPass === 'function' },
+    { name:'toggleSetting()',      check: d => typeof d.defaultView.toggleSetting === 'function' },
+    { name:'clearLogs()',          check: d => typeof d.defaultView.clearLogs === 'function' },
+    { name:'sendNotification()',   check: d => typeof d.defaultView.sendNotification === 'function' },
+    { name:'downloadQR()',         check: d => typeof d.defaultView.downloadQR === 'function' },
+    { name:'copyUrl()',            check: d => typeof d.defaultView.copyUrl === 'function' },
+    { name:'generateCustomQR()',   check: d => typeof d.defaultView.generateCustomQR === 'function' },
+  ]},
+
+  // ═══ Data Objects ═══
+  { group:'📦 بيانات JavaScript', tests:[
+    { name:'VIP_DATA موجود',           check: d => !!d.defaultView.VIP_DATA },
+    { name:'VIP_DATA.tiers (4)',        check: d => d.defaultView.VIP_DATA?.tiers?.length === 4 },
+    { name:'VIP_DATA.users (6)',        check: d => d.defaultView.VIP_DATA?.users?.length === 6 },
+    { name:'LEVELS_DATA موجود',         check: d => !!d.defaultView.LEVELS_DATA },
+    { name:'LEVELS_DATA.levels (9)',    check: d => d.defaultView.LEVELS_DATA?.levels?.length === 9 },
+    { name:'LEVELS_DATA.topUsers (9)', check: d => d.defaultView.LEVELS_DATA?.topUsers?.length === 9 },
+    { name:'LEVELS_DATA.xpEvents (6)', check: d => d.defaultView.LEVELS_DATA?.xpEvents?.length === 6 },
+    { name:'FEATURED_DATA موجود',       check: d => !!d.defaultView.FEATURED_DATA },
+    { name:'FEATURED_DATA.rooms (6)',   check: d => d.defaultView.FEATURED_DATA?.rooms?.length === 6 },
+    { name:'FEATURED_DATA.maxSlots=5', check: d => d.defaultView.FEATURED_DATA?.maxSlots === 5 },
+    { name:'ADMIN_DATA موجود',          check: d => !!d.defaultView.ADMIN_DATA },
+    { name:'pageTitles VIP',           check: d => !!d.defaultView.pageTitles?.vipusers },
+    { name:'pageTitles Levels',        check: d => !!d.defaultView.pageTitles?.levels },
+    { name:'pageTitles Featured',      check: d => !!d.defaultView.pageTitles?.featuredrooms },
+  ]},
+
+  // ═══ Modal Open/Close ═══
+  { group:'🔓 فتح/إغلاق الـ Modals', tests:[
+    { name:'فتح addVipModal',      check: d => { const w=d.defaultView; w.openModal('addVipModal'); const r=d.getElementById('addVipModal')?.classList.contains('open'); w.closeModal('addVipModal'); return r; }},
+    { name:'فتح vipPackagesModal', check: d => { const w=d.defaultView; w.openModal('vipPackagesModal'); const r=d.getElementById('vipPackagesModal')?.classList.contains('open'); w.closeModal('vipPackagesModal'); return r; }},
+    { name:'فتح addXpModal',       check: d => { const w=d.defaultView; w.openModal('addXpModal'); const r=d.getElementById('addXpModal')?.classList.contains('open'); w.closeModal('addXpModal'); return r; }},
+    { name:'فتح editLevelModal',   check: d => { const w=d.defaultView; w.openModal('editLevelModal'); const r=d.getElementById('editLevelModal')?.classList.contains('open'); w.closeModal('editLevelModal'); return r; }},
+    { name:'فتح addLevelModal',    check: d => { const w=d.defaultView; w.openModal('addLevelModal'); const r=d.getElementById('addLevelModal')?.classList.contains('open'); w.closeModal('addLevelModal'); return r; }},
+    { name:'فتح addXpEventModal',  check: d => { const w=d.defaultView; w.openModal('addXpEventModal'); const r=d.getElementById('addXpEventModal')?.classList.contains('open'); w.closeModal('addXpEventModal'); return r; }},
+    { name:'فتح featureRoomModal', check: d => { const w=d.defaultView; w.openModal('featureRoomModal'); const r=d.getElementById('featureRoomModal')?.classList.contains('open'); w.closeModal('featureRoomModal'); return r; }},
+    { name:'فتح scheduleModal',    check: d => { const w=d.defaultView; w.openModal('scheduleModal'); const r=d.getElementById('scheduleModal')?.classList.contains('open'); w.closeModal('scheduleModal'); return r; }},
+    { name:'إغلاق بـ Escape',      check: d => {
+      const w=d.defaultView; w.openModal('addVipModal');
+      d.dispatchEvent(new KeyboardEvent('keydown',{key:'Escape',bubbles:true}));
+      return !d.getElementById('addVipModal')?.classList.contains('open');
+    }},
+  ]},
+
+  // ═══ Rendered Content ═══
+  { group:'🎨 المحتوى المُصيَّر (بعد initPanel)', tests:[
+    { name:'VIP tiers rendered (4 cards)',       check: d => { const w=d.defaultView; w.renderVipPage(); return d.getElementById('vipTierGrid')?.children.length===4; }},
+    { name:'VIP users rendered (6 cards)',       check: d => d.getElementById('vipUsersGrid')?.children.length===6 },
+    { name:'Levels overview (4 cards)',          check: d => { const w=d.defaultView; w.renderLevelsPage(); return d.getElementById('levelsOverview')?.children.length===4; }},
+    { name:'Top users grid (9 cards)',           check: d => d.getElementById('topUsersGrid')?.children.length===9 },
+    { name:'Levels table (9 rows)',              check: d => d.getElementById('levelsTableBody')?.children.length===9 },
+    { name:'XP events (6 rows)',                 check: d => d.getElementById('xpEventsTable')?.children.length===6 },
+    { name:'Featured rooms grid (6 cards)',      check: d => { const w=d.defaultView; w.renderFeaturedPage(); return d.getElementById('featuredRoomsGrid')?.children.length===6; }},
+    { name:'Featured slots (5 slots)',           check: d => d.getElementById('featuredSlots')?.children.length===5 },
+    { name:'Featured schedule (2 schedules)',    check: d => d.getElementById('featuredSchedule')?.children.length===2 },
+    { name:'Featured analytics (3 featured)',   check: d => d.getElementById('featuredAnalytics')?.children.length===3 },
+    { name:'فلترة VIP بالطبقة (gold=2)',        check: d => { const w=d.defaultView; w.filterVipTier('gold'); const r=d.getElementById('vipUsersGrid')?.children.length===2; w.filterVipTier('all'); return r; }},
+    { name:'فلترة VIP بالبحث (نورة)',            check: d => { const w=d.defaultView; w.filterVipUsers('نورة'); const r=d.getElementById('vipUsersGrid')?.children.length>=1; w.filterVipUsers(''); return r; }},
+    { name:'VIP perks editor rendered',         check: d => (d.getElementById('vipPerksEditor')?.children.length||0)>=4 },
+    { name:'featureRoomSelect populated',       check: d => d.getElementById('featureRoomSelect')?.options.length>1 },
+  ]},
+
+  // ═══ CSS Classes ═══
+  { group:'🎨 CSS Classes', tests:[
+    { name:'.vip-tier-card موجودة',   check: d => !!d.querySelector('.vip-tier-card') },
+    { name:'.vip-user-card موجودة',   check: d => !!d.querySelector('.vip-user-card') },
+    { name:'.level-row موجودة',       check: d => !!d.querySelector('.level-row') },
+    { name:'.top-user-card موجودة',   check: d => !!d.querySelector('.top-user-card') },
+    { name:'.featured-room-card موجودة', check: d => !!d.querySelector('.featured-room-card') },
+    { name:'.modal-overlay موجودة',   check: d => d.querySelectorAll('.modal-overlay').length >= 8 },
+    { name:'.modal-box موجودة',       check: d => !!d.querySelector('.modal-box') },
+    { name:'.lvl-badge موجودة',       check: d => !!d.querySelector('.lvl-badge') },
+    { name:'.fr-cover موجودة',        check: d => !!d.querySelector('.fr-cover') },
+    { name:'.slot-row موجودة',        check: d => !!d.querySelector('.slot-row') },
+    { name:'.perk-pill موجودة',       check: d => !!d.querySelector('.perk-pill') },
+    { name:'.is-featured موجودة (3)', check: d => d.querySelectorAll('.is-featured').length>=3 },
+  ]},
+];
+
+let adminDoc = null;
+let results = [];
+
+function log(msg, type='info'){
+  const el = document.getElementById('logArea');
+  const line = document.createElement('div');
+  line.className = type;
+  line.textContent = `[${new Date().toLocaleTimeString('ar')}] ${msg}`;
+  el.appendChild(line);
+  el.scrollTop = el.scrollHeight;
+}
+
+async function loadAdmin(){
+  return new Promise((resolve, reject) => {
+    const wrap = document.getElementById('iframeWrap');
+    wrap.style.display = 'block';
+    const iframe = document.getElementById('adminFrame');
+    iframe.onload = () => {
+      try {
+        const d = iframe.contentDocument || iframe.contentWindow.document;
+        // trigger login to get panel initialized
+        const w = d.defaultView;
+        if(w && w.doLogin){
+          // set credentials
+          const uEl = d.getElementById('adminUser');
+          const pEl = d.getElementById('adminPass');
+          if(uEl) uEl.value = 'admin';
+          if(pEl) pEl.value = 'alghamid2025';
+          w.doLogin();
+          setTimeout(() => resolve(d), 600);
+        } else {
+          resolve(d);
+        }
+      } catch(e) {
+        reject(e);
+      }
+    };
+    iframe.onerror = reject;
+    iframe.src = 'admin.html?' + Date.now();
+  });
+}
+
+async function runAllTests(){
+  document.getElementById('logArea').innerHTML = '';
+  document.getElementById('testSections').innerHTML = '';
+  results = [];
+  log('بدء تحميل لوحة التحكم...', 'info');
+
+  try {
+    adminDoc = await loadAdmin();
+    log('تم تحميل لوحة التحكم وتسجيل الدخول ✓', 'ok');
+  } catch(e) {
+    log('خطأ في تحميل الـ iframe: ' + e.message, 'err');
+    log('تشغيل الاختبارات بدون iframe (بعض الاختبارات لن تعمل)', 'warn');
+  }
+
+  const totalTests = TESTS.reduce((a,g) => a + g.tests.length, 0);
+  let done = 0;
+
+  for(const group of TESTS){
+    const groupResults = [];
+    for(const test of group.tests){
+      let status = 'fail', error = null;
+      try {
+        if(adminDoc){
+          const r = test.check(adminDoc);
+          status = r ? 'pass' : 'fail';
+        } else {
+          status = 'warn';
+          error = 'iframe لم يُحمَّل';
+        }
+      } catch(e) {
+        status = 'fail';
+        error = e.message;
+      }
+      groupResults.push({ name: test.name, status, error });
+      if(status === 'fail') log(`✗ ${test.name}${error ? ': '+error : ''}`, 'err');
+      done++;
+      document.getElementById('progressBar').style.width = (done/totalTests*100).toFixed(0)+'%';
+      await new Promise(r => setTimeout(r, 10));
+    }
+    renderGroup(group.group, groupResults);
+    results.push(...groupResults);
+  }
+
+  const pass = results.filter(r => r.status==='pass').length;
+  const fail = results.filter(r => r.status==='fail').length;
+  const warn = results.filter(r => r.status==='warn').length;
+  document.getElementById('totalCount').textContent = results.length;
+  document.getElementById('passCount').textContent = pass;
+  document.getElementById('failCount').textContent = fail;
+  document.getElementById('warnCount').textContent = warn;
+  const pct = Math.round(pass/results.length*100);
+  log(`اكتمل: ${pass}/${results.length} ناجح (${pct}%)`, pct>=90?'ok':'warn');
+}
+
+function renderGroup(groupName, groupResults){
+  const sec = document.createElement('div');
+  sec.className = 'section';
+  const h2 = document.createElement('h2');
+  const passN = groupResults.filter(r=>r.status==='pass').length;
+  h2.innerHTML = `${groupName} <span style="font-size:11px;background:rgba(16,185,129,.15);color:#10b981;padding:2px 8px;border-radius:8px;font-weight:700">${passN}/${groupResults.length}</span>`;
+  sec.appendChild(h2);
+  const grid = document.createElement('div');
+  grid.className = 'test-grid';
+  groupResults.forEach(r => {
+    const item = document.createElement('div');
+    item.className = 'test-item ' + r.status;
+    item.innerHTML = `
+      <div class="test-icon">${r.status==='pass'?'✓':r.status==='warn'?'⚠':'✗'}</div>
+      <div class="test-name">${r.name}${r.error?`<br><span style="font-size:10px;color:#f59e0b">${r.error}</span>`:''}</div>
+      <div class="test-status">${r.status.toUpperCase()}</div>`;
+    grid.appendChild(item);
+  });
+  sec.appendChild(grid);
+  document.getElementById('testSections').appendChild(sec);
+}
+</script>
+</body>
+</html>
